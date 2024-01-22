@@ -1,9 +1,12 @@
-function enviarDatos(){
+async function enviarDatos(){
     const nombre = document.getElementById('nombre').value;
 
-    enviarDatosAlServidor(nombre)
-        .then(mensajeDeAgradecimiento) //Recibe el resolve
-        .catch(mensajeError); // Recibe el reject
+    try{
+        const resultado = await enviarDatosAlServidor(nombre);
+        mensajeDeAgradecimiento(resultado+' '+nombre);
+    }catch(e){
+        mensajeError(e);
+    }
 }
 
 
@@ -12,11 +15,8 @@ function enviarDatosAlServidor(nombre) {
         setTimeout(() => {
             const exito = (nombre.toLowerCase() !== 'error');
 
-            if(exito){
-                resolve('Bienvenido al sistema');
-            }else{
-                reject('Acceso denegado');
-            }
+            const resultado = exito ? 'Bienvenido al sistema' : 'Datos erroneos';
+            exito ? resolve(resultado) : reject(resultado);
         }, 2000);
     });
 }
